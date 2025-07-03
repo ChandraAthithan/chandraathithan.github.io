@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Aeroleaf Wind Turbine</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: linear-gradient(135deg, #87CEEB, #98FB98);
+            font-family: Arial, sans-serif;
+        }
+        #container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+        }
+        #controls {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 15px;
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+        .control-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: inline-block;
+            width: 140px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        input[type="range"] {
+            width: 150px;
+            margin-left: 10px;
+        }
+        button {
+            background: linear-gradient(45deg, #32CD32, #228B22);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 5px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            background: linear-gradient(45deg, #228B22, #006400);
+            transform: translateY(-2px);
+        }
+        #info {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            color: white;
+            font-size: 12px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            border-radius: 10px;
+            backdrop-filter: blur(5px);
+        }
+        .title {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        .value-display {
+            color: #32CD32;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .wind-arrows {
+            position: absolute;
+            top: 50%;
+            right: 50px;
+            transform: translateY(-50%);
+            color: #4A90E2;
+            font-size: 24px;
+            animation: windFlow 2s infinite;
+        }
+        @keyframes windFlow {
+            0%, 100% { transform: translateY(-50%) translateX(0); }
+            50% { transform: translateY(-50%) translateX(10px); }
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div class="title">🍃 3D Aeroleaf - Curved Blade Design</div>
+        <div class="wind-arrows">💨💨💨</div>
+        
+        <div id="controls">
+            <div class="control-group">
+                <label>Wind Speed:</label>
+                <input type="range" id="windSpeed" min="0" max="10" step="0.5" value="3">
+                <span class="value-display" id="windSpeedValue">3</span>
+            </div>
+            <div class="control-group">
+                <label>Blade Curve:</label>
+                <input type="range" id="bladeCurve" min="0.2" max="1.5" step="0.1" value="0.8">
+                <span class="value-display" id="bladeCurveValue">0.8</span>
+            </div>
+            <div class="control-group">
+                <label>Twist Angle:</label>
+                <input type="range" id="twistAngle" min="0" max="90" step="5" value="45">
+                <span class="value-display" id="twistAngleValue">45°</span>
+            </div>
+            <div class="control-group">
+                <label>Blade Count:</label>
+                <input type="range" id="bladeCount" min="2" max="6" step="1" value="3">
+                <span class="value-display" id="bladeCountValue">3</span>
+            </div>
+            <div class="control-group">
+                <button onclick="toggleRotation()">🌪️ Toggle Rotation</button>
+                <button onclick="resetView()">🔄 Reset View</button>
+            </div>
+            <div class="control-group">
+                <button onclick="showWindFlow()">💨 Show Wind Flow</button>
+                <button onclick="toggleWireframe()">📐 Wireframe</button>
+            </div>
+        </div>
+        
+        <div id="info">
+            <strong>🌿 Aerodynamic Leaf Turbine</strong><br>
+            Curved blades create torque from wind pressure<br>
+            Vertical axis design catches wind from all directions<br>
+            Mouse: Rotate | Wheel: Zoom | Drag: Pan
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        let scene, camera, renderer, turbine;
+        let isRotating = true;
+        let windSpeed = 3;
+        let bladeCurve = 0.8;
+        let twistAngle = 45;
+        let bladeCount = 3;
+        let wireframeMode = false;
+        let windParticles = [];
+        let showWind = false;
+
+        function init() {
+            // Scene setup
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x87CEEB);
+
+            // Camera setup
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(8, 5, 8);
+            camera.lookAt(0, 0, 0);
+
+            // Renderer setup
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            document.getElementById('container').appendChild(renderer.domElement);
+
+            // Lighting
+            const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
+            scene.add(ambientLight);
+
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 1.2);
+            directionalLight.position.set(15, 20, 10);
+            directionalLight.castShadow = true;
+            directionalLight.shadow.mapSize.width = 2048;
+            directionalLight.shadow.mapSize.height = 2048;
+            scene.add(directionalLight);
+
+            // Ground
+            const groundGeometry = new THREE.PlaneGeometry(30, 30);
+            const groundMaterial = new THREE.MeshLambertMaterial({ color: 0x3CB371 });
+            const ground = new THREE.Mesh(groundGeometry, groundMaterial);
+            ground.rotation.x = -Math.PI / 2;
+            ground.position.y = -6;
+            ground.receiveShadow = true;
+            scene.add(ground);
+
+            // Create wind particles
+            createWindParticles();
+
+            // Create turbine
+            createTurbine();
+
+            // Mouse controls
+            addMouseControls();
+
+            // Control listeners
+            setupControlListeners();
+
+            // Start animation
+            animate();
+        }
+
+        function createTurbine() {
+            if (turbine) {
+                scene.remove(turbine);
+            }
+
+            turbine = new THREE.Group();
+
+            // Central shaft
+            const shaftGeometry = new THREE.CylinderGeometry(0.1, 0.15, 10, 12);
+            const shaftMaterial = new THREE.MeshPhongMaterial({ 
+                color: 0x8B4513,
+                shininess: 30
+            });
+            const shaft = new THREE.Mesh(shaftGeometry, shaftMaterial);
+            shaft.castShadow = true;
+            turbine.add(shaft);
+
+            // Create curved blades
+            for (let i = 0; i < bladeCount; i++) {
+                const blade = createCurvedBlade();
+                const angle = (i * Math.PI * 2) / bladeCount;
+                blade.rotation.y = angle;
+                turbine.add(blade);
+            }
+
+            // Base hub
+            const hubGeometry = new THREE.CylinderGeometry(0.4, 0.5, 0.8, 16);
+            const hubMaterial = new THREE.MeshPhongMaterial({ 
+                color: 0x333333,
+                shininess: 100
+            });
+            const hub = new THREE.Mesh(hubGeometry, hubMaterial);
+            hub.position.y = -5.5;
+            hub.castShadow = true;
+            turbine.add(hub);
+
+            turbine.position.y = 0;
+            scene.add(turbine);
+        }
+
+        function createCurvedBlade() {
+            const blade = new THREE.Group();
+            
+            // Create curved blade using parametric geometry
+            const segments = 20;
+            const radialSegments = 10;
+            
+            // Create the curved blade surface
+            const bladeGeometry = new THREE.BufferGeometry();
+            const vertices = [];
+            const indices = [];
+            const normals = [];
+            const colors = [];
+            
+            // Generate vertices for curved blade
+            for (let i = 0; i <= segments; i++) {
+                const t = i / segments;
+                const height = (t - 0.5) * 8; // -4 to 4
+                
+                // Blade curve - creates the aerodynamic shape
+                const radius = 1.5 + Math.sin(t * Math.PI) * 0.5; // Varying radius
+                const curve = Math.sin(t * Math.PI * 2) * bladeCurve; // S-curve
+                
+                for (let j = 0; j <= radialSegments; j++) {
+                    const s = j / radialSegments;
+                    
+                    // Create curved cross-section
+                    const angle = s * Math.PI; // Half circle cross-section
+                    const x = Math.cos(angle) * radius + curve;
+                    const z = Math.sin(angle) * 0.3; // Blade thickness
+                    
+                    // Add twist along the blade height
+                    const twist = (height / 4) * (twistAngle * Math.PI / 180);
+                    const xTwisted = x * Math.cos(twist) - z * Math.sin(twist);
+                    const zTwisted = x * Math.sin(twist) + z * Math.cos(twist);
+                    
+                    vertices.push(xTwisted, height, zTwisted);
+                    
+                    // Calculate normal (simplified)
+                    const normal = new THREE.Vector3(xTwisted, 0, zTwisted).normalize();
+                    normals.push(normal.x, normal.y, normal.z);
+                    
+                    // Color gradient (green to yellow)
+                    const green = 0.5 + t * 0.3;
+                    const yellow = 0.3 + (1 - t) * 0.4;
+                    colors.push(yellow, green, 0.2);
+                }
+            }
+            
+            // Generate indices for triangles
+            for (let i = 0; i < segments; i++) {
+                for (let j = 0; j < radialSegments; j++) {
+                    const a = i * (radialSegments + 1) + j;
+                    const b = a + radialSegments + 1;
+                    const c = a + 1;
+                    const d = b + 1;
+                    
+                    indices.push(a, b, c);
+                    indices.push(b, d, c);
+                }
+            }
+            
+            bladeGeometry.setIndex(indices);
+            bladeGeometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+            bladeGeometry.setAttribute('normal', new THREE.Float32BufferAttribute(normals, 3));
+            bladeGeometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+            bladeGeometry.computeVertexNormals();
+            
+            const bladeMaterial = new THREE.MeshPhongMaterial({
+                vertexColors: true,
+                shininess: 60,
+                transparent: true,
+                opacity: 0.9,
+                wireframe: wireframeMode,
+                side: THREE.DoubleSide
+            });
+            
+            const bladeMesh = new THREE.Mesh(bladeGeometry, bladeMaterial);
+            bladeMesh.castShadow = true;
+            bladeMesh.receiveShadow = true;
+            
+            blade.add(bladeMesh);
+            
+            // Add leaf veins for detail
+            const veins = createBladeVeins();
+            blade.add(veins);
+            
+            return blade;
+        }
+
+        function createBladeVeins() {
+            const veins = new THREE.Group();
+            const veinMaterial = new THREE.MeshPhongMaterial({
+                color: 0x2E8B57,
+                transparent: true,
+                opacity: 0.7
+            });
+            
+            // Central vein
+            const centralVeinGeometry = new THREE.CylinderGeometry(0.03, 0.03, 7, 8);
+            const centralVein = new THREE.Mesh(centralVeinGeometry, veinMaterial);
+            centralVein.position.x = 1;
+            centralVein.castShadow = true;
+            veins.add(centralVein);
+            
+            // Side veins
+            for (let i = 0; i < 5; i++) {
+                const veinGeometry = new THREE.CylinderGeometry(0.015, 0.015, 0.8, 6);
+                const vein = new THREE.Mesh(veinGeometry, veinMaterial);
+                vein.position.y = (i - 2) * 1.5;
+                vein.position.x = 1.2;
+                vein.rotation.z = (i - 2) * 0.2;
+                veins.add(vein);
+            }
+            
+            return veins;
+        }
+
+        function createWindParticles() {
+            const particleCount = 100;
+            const particleGeometry = new THREE.SphereGeometry(0.05, 4, 4);
+            const particleMaterial = new THREE.MeshBasicMaterial({
+                color: 0x87CEEB,
+                transparent: true,
+                opacity: 0.6
+            });
+            
+            windParticles = [];
+            for (let i = 0; i < particleCount; i++) {
+                const particle = new THREE.Mesh(particleGeometry, particleMaterial);
+                particle.position.set(
+                    Math.random() * 20 - 10,
+                    Math.random() * 10 - 5,
+                    Math.random() * 20 - 10
+                );
+                particle.userData = {
+                    velocity: new THREE.Vector3(
+                        Math.random() * 0.1 + 0.05,
+                        Math.random() * 0.02 - 0.01,
+                        Math.random() * 0.02 - 0.01
+                    )
+                };
+                windParticles.push(particle);
+                if (showWind) scene.add(particle);
+            }
+        }
+
+        function addMouseControls() {
+            let mouseDown = false;
+            let mouseX = 0, mouseY = 0;
+            let cameraAngle = 0;
+
+            renderer.domElement.addEventListener('mousedown', (e) => {
+                mouseDown = true;
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+            });
+
+            renderer.domElement.addEventListener('mouseup', () => {
+                mouseDown = false;
+            });
+
+            renderer.domElement.addEventListener('mousemove', (e) => {
+                if (mouseDown) {
+                    const deltaX = e.clientX - mouseX;
+                    const deltaY = e.clientY - mouseY;
+                    
+                    cameraAngle += deltaX * 0.01;
+                    const distance = camera.position.distanceTo(new THREE.Vector3(0, 0, 0));
+                    camera.position.x = Math.cos(cameraAngle) * distance;
+                    camera.position.z = Math.sin(cameraAngle) * distance;
+                    camera.position.y += deltaY * 0.05;
+                    camera.lookAt(0, 0, 0);
+                    
+                    mouseX = e.clientX;
+                    mouseY = e.clientY;
+                }
+            });
+
+            renderer.domElement.addEventListener('wheel', (e) => {
+                const distance = camera.position.distanceTo(new THREE.Vector3(0, 0, 0));
+                const newDistance = Math.max(3, Math.min(20, distance + e.deltaY * 0.01));
+                camera.position.multiplyScalar(newDistance / distance);
+            });
+        }
+
+        function setupControlListeners() {
+            document.getElementById('windSpeed').addEventListener('input', (e) => {
+                windSpeed = parseFloat(e.target.value);
+                document.getElementById('windSpeedValue').textContent = windSpeed;
+            });
+
+            document.getElementById('bladeCurve').addEventListener('input', (e) => {
+                bladeCurve = parseFloat(e.target.value);
+                document.getElementById('bladeCurveValue').textContent = bladeCurve;
+                createTurbine();
+            });
+
+            document.getElementById('twistAngle').addEventListener('input', (e) => {
+                twistAngle = parseFloat(e.target.value);
+                document.getElementById('twistAngleValue').textContent = twistAngle + '°';
+                createTurbine();
+            });
+
+            document.getElementById('bladeCount').addEventListener('input', (e) => {
+                bladeCount = parseInt(e.target.value);
+                document.getElementById('bladeCountValue').textContent = bladeCount;
+                createTurbine();
+            });
+        }
+
+        function toggleRotation() {
+            isRotating = !isRotating;
+        }
+
+        function resetView() {
+            camera.position.set(8, 5, 8);
+            camera.lookAt(0, 0, 0);
+        }
+
+        function showWindFlow() {
+            showWind = !showWind;
+            windParticles.forEach(particle => {
+                if (showWind) {
+                    scene.add(particle);
+                } else {
+                    scene.remove(particle);
+                }
+            });
+        }
+
+        function toggleWireframe() {
+            wireframeMode = !wireframeMode;
+            createTurbine();
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Rotate turbine based on wind speed
+            if (isRotating && turbine) {
+                turbine.rotation.y += windSpeed * 0.03;
+            }
+
+            // Animate wind particles
+            if (showWind) {
+                windParticles.forEach(particle => {
+                    particle.position.add(particle.userData.velocity);
+                    
+                    // Reset particles that go too far
+                    if (particle.position.x > 15) {
+                        particle.position.x = -15;
+                        particle.position.y = Math.random() * 10 - 5;
+                        particle.position.z = Math.random() * 20 - 10;
+                    }
+                });
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        function handleResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        window.addEventListener('resize', handleResize);
+        
+        // Initialize
+        init();
+    </script>
+</body>
+</html>
