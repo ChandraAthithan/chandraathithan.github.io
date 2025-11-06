@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CA's Imposter Party</title>
+  <style>
+    :root{
+      --bg:#0f172a;--card:#111827;--muted:#1f2937;--text:#e5e7eb;--accent:#22d3ee;--accent-2:#a78bfa;--danger:#fb7185;--ok:#34d399;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;background:linear-gradient(135deg,#0b1024 0%,#0f172a 40%,#0a1c2e 100%);color:var(--text);font-family:system-ui,Roboto,Arial;display:flex;align-items:flex-start;justify-content:center;padding:16px}
+    .app{width:100%;max-width:980px}
+    .card{background:rgba(17,24,39,.85);backdrop-filter: blur(6px);border:1px solid #1f2937;border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+    header.card{padding:18px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+    h1{margin:0;font-size:20px}
+    .content.card{padding:18px}
+    .field{margin-bottom:14px}
+    .field label{font-size:13px;opacity:.9;margin-bottom:6px;display:block}
+    input,select,textarea{width:100%;background:#0b1222;border:1px solid #1f2439;color:var(--text);padding:10px 12px;border-radius:12px;outline:none;transition:.2s}
+    input:focus,select:focus{border-color:var(--accent)}
+    .players{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+    .btn{border:none;border-radius:14px;padding:10px 14px;font-weight:600;cursor:pointer;transition:.2s}
+    .btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#001018}
+    .btn.ghost{background:#0b1222;border:1px solid #1f2439;color:var(--text)}
+    .btn.warn{background:var(--danger);color:#2a0810}
+    .btn.ok{background:var(--ok);color:#062016}
+    .stack{display:flex;gap:10px;flex-wrap:wrap}
+    .hidden{display:none!important}
+    .pill{padding:6px 10px;border-radius:999px;background:#101a2c;border:1px solid #1f2439;font-size:12px}
+    .turn{padding:14px;border:1px dashed #24314b;border-radius:14px;background:#0b1222;display:flex;justify-content:space-between;align-items:center}
+    #card{padding:16px;border-radius:14px;background:#0b1222;border:1px solid #1f2439;margin-top:12px;text-align:center;font-size:22px}
+    .cat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px}
+    .cat-item{display:flex;align-items:center;gap:8px;padding:8px;border:1px solid #1f2439;border-radius:12px;background:#0b1222}
+    @media(max-width:600px){h1{font-size:18px}}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="card">
+      <h1>🕵️‍♂️ CA's Imposter Party</h1>
+      <div class="stack">
+        <span class="pill" id="badgeRound">Round –</span>
+        <span class="pill" id="badgeDifficulty">Difficulty –</span>
+        <span class="pill" id="badgeCategory">Categories –</span>
+        <span class="pill" id="badgeTests" title="Self-tests">Tests: pending</span>
+      </div>
+    </header>
+
+    <section id="setup" class="content card">
+      <h2>New Game Setup</h2>
+      <div class="field"><label>Number of players</label><input id="numPlayers" type="number" value="5" min="2" max="16" /></div>
+      <div class="field"><label>Number of imposters</label><input id="numImposters" type="number" value="1" min="1" max="5" /></div>
+      <div class="field"><label>Difficulty</label><select id="difficulty"><option>Easy</option><option selected>Normal</option><option>Hard</option></select></div>
+      <div class="field"><label>Categories (checkbox)</label><div id="categoryBox" class="cat-grid"></div></div>
+      <div><label>Player names</label><div id="players" class="players"></div></div>
+      <div class="stack" style="margin-top:12px"><button class="btn ghost" id="btnRandomizeNames">Shuffle</button><button class="btn primary" id="btnStart">Start</button></div>
+    </section>
+
+    <section id="play" class="content card hidden">
+      <h2>Player Turn</h2>
+      <div class="turn"><div><strong id="turnName"></strong></div><div class="stack"><button id="btnShow" class="btn ghost">Show</button><button id="btnHide" class="btn ok" hidden>Hide</button></div></div>
+      <div id="card" class="hidden"></div>
+      <div class="pill" id="progressPill" style="margin-top:10px"></div>
+      <button id="btnAbort" class="btn warn" style="margin-top:12px">New Setup</button>
+    </section>
+
+    <section id="reveal" class="content card hidden">
+      <h2>Discussion Time</h2>
+      <div class="stack"><button id="btnReveal" class="btn primary">Reveal Imposter</button><button id="btnNextRound" class="btn ghost" hidden>Next Round</button></div>
+      <div id="revealBox" class="hidden" style="margin-top:12px"></div>
+    </section>
+  </div>
+
+  <script>
+    // ===== Helpers
+    const $=s=>document.querySelector(s);const $$=s=>Array.from(document.querySelectorAll(s));
+    const rand=n=>Math.floor(Math.random()*n);
+    const shuffle=a=>a.map(x=>[Math.random(),x]).sort((a,b)=>a[0]-b[0]).map(v=>v[1]);
+    window.addEventListener('beforeunload',()=>sessionStorage.clear());
+
+    // ===== Word bank (10+ categories, 30+ words each, words can be 1-3 terms)
+    const WORDS={
+      "Animals":["red fox","snow leopard","giant panda","mountain goat","river dolphin","sea lion","grey wolf","wild buffalo","white tiger","golden eagle","komodo dragon","blue whale","king cobra","bald eagle","spotted deer","flying squirrel","arctic hare","meerkat colony","desert lizard","rainbow trout","black panther","jungle cat","giant tortoise","spider monkey","baby penguin","polar bear","forest owl","wild boar","saber tiger","prairie dog","rock python","river otter","desert fox","tree frog"],
+      "Food":["cheese pizza","grilled sandwich","paneer tikka","butter chicken","fried noodles","garlic bread","veg burger","fruit salad","mango milkshake","chicken pasta","caesar salad","ice cream bowl","masala dosa","idli sambar","bbq wings","rice bowl","fish curry","aloo paratha","veg biryani","egg fried rice","tomato soup","spring rolls","bread omelette","crispy fries","veg wrap","tandoori roti","garlic naan","prawn fry","cake slice","sweet pancakes","club sandwich","cream bun","dal makhani","veg cutlet"],
+      "Objects":["pocket watch","wireless mouse","gaming keyboard","office chair","coffee mug","travel backpack","mobile charger","smart speaker","digital camera","kitchen knife","photo frame","table lamp","ceiling fan","safety helmet","water bottle","study notebook","sticky notes","whiteboard marker","LED torch","hand sanitizer","Bluetooth headset","data cable","folding umbrella","power bank","air purifier","tv remote","chess board","alarm clock","mini tripod","water flask","paper clip","stapler pin","glue stick","desk calendar"],
+      "Movies":["inception","dark knight","interstellar","shawshank redemption","wolf of wall street","the matrix","fight club","toy story","avatar two","oppenheimer","endgame","infinity war","iron man","black panther","john wick","dangal movie","3 idiots","veer zaara","drishyam","baahubali","kantara movie","kgf chapter","tenet movie","lal singh chaddha","titanic","jurassic park","mission impossible","mad max fury","inside out","spirited away","ford v ferrari","hidden figures","kung fu panda","zindagi na milegi dobara"],
+      "Technology":["artificial intelligence","quantum computing","edge device","neural processor","automation robot","high speed router","cloud server","docker container","mobile chipset","ssd storage","wifi 6 router","touch screen panel","graphic card","android phone","virtual machine","proxy firewall","circuit board","solar inverter","sensor module","smart drone","iot gateway","bluetooth beacon","barcode scanner","thermal printer","vr headset","3d scanner","laser projector","gaming console","robotic arm","raspberry pi","serverless function","object storage","edge cache","machine vision"],
+      "Fantasy & Mythical Creatures":["fire dragon","shadow phoenix","crystal unicorn","stone golem","forest elf","water nymph","thunder titan","sky griffin","ice sorcerer","dark knight","sun priestess","lava beast","storm wolf","magic fairy","ancient hydra","time wizard","abyss serpent","mountain dwarf","sand guardian","celestial monk","golden chimera","silver pegasus","spirit fox","astral mage","frost giant","emerald drake","phantom rider","night assassin","crystal witch","guardian angel","shadow drake","forest sprite","runic golem","storm elemental"],
+      "Silly & Random":["dancing potato","sleepy banana","flying toaster","angry cupcake","giant rubber duck","laughing onion","jumping pillow","talking fridge","hungry sofa","screaming watermelon","lazy panda hat","magic spoon","crazy slippers","crying burger","upside down cat","noisy popcorn","secret sandwich","cartoon carrot","purple pillow","funky frog","ninja potato","pirate cupcake","silly octopus","clumsy penguin","moon cheese","angry toaster","tiny dinosaur","weird cactus","happy broom","fluffy cloud","ticklish taco","grumpy donut","wobble chair","noodle dragon"],
+      "Sports":["football match","cricket stadium","badminton smash","swimming relay","boxing gloves","golf course","tennis serve","volleyball spike","kabaddi tackle","rugby team","hockey stick","cycling race","archery range","wrestling ring","marathon track","ski jumping","skateboarding park","table tennis","weight lifting","surfing wave","karate practice","basketball dunk","chess master","carrom board","snooker table","kabaddi mat","cricket pitch","throw ball","relay race","pole vault","shot put","high jump","long jump","200m sprint"],
+      "Places":["mountain peak","desert village","haunted castle","floating island","tropical beach","snowy forest","ancient temple","busy marketplace","quiet library","modern airport","city skyline","village pond","underground cave","old lighthouse","secret bunker","frozen lake","wild jungle","foggy valley","lonely highway","train station","harbor dock","moon base","space station","fantasy realm","hidden waterfall","giant canyon","mystic river","abandoned ship","lost kingdom","royal palace","hidden cove","ancient arena","enchanted garden","city metro"],
+      "Professions":["software engineer","airline pilot","movie director","civil architect","graphic designer","data analyst","police officer","doctor surgeon","robotics expert","tea shop owner","restaurant chef","lawyer advocate","train driver","bank manager","fashion model","news reporter","scientist researcher","farm worker","music composer","swimming coach","tennis trainer","cricket umpire","football referee","mechanical fitter","electrician","plumber technician","camera operator","stage performer","drone operator","navy officer","game designer","product manager","qa tester","site engineer"],
+      "Objects (Tech)":["usb hub","type c cable","gaming mouse pad","silent keyboard","mechanical keyboard","wireless earbuds","noise cancel headphones","android tablet","web camera","ring light","hdmi splitter","nvme drive","sata ssd","micro sd card","power adapter","arduino board","esp32 module","breadboard kit","soldering iron","thermal paste","cpu cooler","case fan","itx case","wifi dongle","ethernet switch","microphone arm","boom mic","capture card","green screen","vr controllers","lipo battery","buck converter","raspberry hat","pi camera"]
+    };
+
+    // ===== Build category checkbox list (multi-select)
+    const categoryBox=$('#categoryBox');
+    Object.keys(WORDS).forEach(k=>{
+      const label=document.createElement('label');
+      label.className='cat-item';
+      label.innerHTML=`<input type="checkbox" value="${k}" style="width:16px;height:16px"> <span>${k}</span>`;
+      categoryBox.appendChild(label);
+    });
+
+    // ===== State
+    const state={round:0,players:[],order:[],imposters:[],recent:[],difficulty:'Normal',categories:[],word:'',usedWords:new Set(),viewed:new Set()};
+
+    // ===== Players UI
+    const numPlayersInput=$('#numPlayers');const playersWrap=$('#players');
+    function buildPlayers(){
+      playersWrap.innerHTML='';
+      const n=Math.min(16,Math.max(2,parseInt(numPlayersInput.value||'5',10)));
+      for(let i=0;i<n;i++){
+        const d=document.createElement('div');d.className='field';
+        d.innerHTML=`<input type="text" value="Player ${i+1}" aria-label="Player ${i+1} name"/>`;
+        playersWrap.appendChild(d);
+      }
+      // cap imposters
+      const imp=$('#numImposters'); if(parseInt(imp.value,10)>n-1) imp.value=Math.max(1,n-1);
+    }
+    buildPlayers(); numPlayersInput.addEventListener('input',buildPlayers);
+
+    // Shuffle names
+    $('#btnRandomizeNames').addEventListener('click',()=>{
+      const arr=$$('#players input').map(i=>i.value.trim());
+      const sh=shuffle(arr);
+      $$('#players input').forEach((i,x)=>i.value=sh[x]||`Player ${x+1}`);
+    });
+
+    // ===== Start game
+    $('#btnStart').addEventListener('click',()=>{
+      const n=parseInt(numPlayersInput.value,10);
+      const k=Math.max(1,Math.min(parseInt($('#numImposters').value,10)||1,n-1));
+      if(n<2){alert('Need at least 2 players');return;}
+      if(k>=n){alert('Imposters must be less than players');return;}
+
+      const names=$$('#players input').map((i,x)=>({id:x,name:i.value.trim()||`Player ${x+1}`}));
+      const cats=[...document.querySelectorAll('#categoryBox input:checked')].map(c=>c.value);
+      if(!cats.length){alert('Select at least one category.');return;}
+
+      state.players=names; state.categories=cats; state.difficulty=$('#difficulty').value;
+
+      const pool=buildWordPool();
+      if(!pool.length){alert('Not enough words available for this difficulty. Try another difficulty/categories.');return;}
+
+      state.word=pickWord(pool);
+      state.order=shuffle(names.map(p=>p.id));
+      state.imposters=pickImposters(names.map(p=>p.id),k);
+      state.viewed=new Set();
+      state.round++;
+
+      $('#badgeRound').textContent=`Round ${state.round}`;
+      $('#badgeDifficulty').textContent=state.difficulty;
+      $('#badgeCategory').textContent=state.categories.join(', ');
+
+      show('play'); initTurn();
+    });
+
+    // ===== Word picking & difficulty filtering
+    function buildWordPool(){
+      let all=[]; state.categories.forEach(c=>all.push(...WORDS[c]));
+      const lengthNoSpaces=w=>w.replace(/\s+/g,'').length;
+      if(state.difficulty==='Easy') all=all.filter(w=>lengthNoSpaces(w)<=5);
+      else if(state.difficulty==='Normal') all=all.filter(w=>{const l=lengthNoSpaces(w);return l>=6&&l<=10});
+      else all=all.filter(w=>lengthNoSpaces(w)>=11);
+      // remove used
+      return all.filter(w=>!state.usedWords.has(w));
+    }
+    function pickWord(pool){const w=pool[rand(pool.length)]; state.usedWords.add(w); return w.toUpperCase();}
+
+    // ===== Imposter picking with 5-round memory
+    function pickImposters(ids,k){
+      const banned=new Set(state.recent.flat()); let tries=0;
+      while(tries<200){
+        tries++;
+        const pick=shuffle(ids).slice(0,k);
+        if(!pick.some(id=>banned.has(id))) return pick;
+      }
+      // fallback: avoid repeating last round at least
+      const last=state.recent[state.recent.length-1]||[]; tries=0;
+      while(tries<200){
+        tries++;
+        const pick=shuffle(ids).slice(0,k);
+        if(!pick.some(id=>last.includes(id))) return pick;
+      }
+      return shuffle(ids).slice(0,k);
+    }
+
+    // ===== Turn UI
+    let playIndex=0; const progressPill=$('#progressPill');
+    function initTurn(){
+      playIndex=0; updateTurn(); updateProgress();
+      $('#card').classList.add('hidden'); $('#btnShow').hidden=false; $('#btnHide').hidden=true;
+    }
+    function updateTurn(){ const id=state.order[playIndex]; $('#turnName').textContent=state.players[id].name; }
+    function updateProgress(){ progressPill.textContent=`${state.viewed.size}/${state.players.length} viewed`; }
+
+    $('#btnShow').addEventListener('click',()=>{
+      const id=state.order[playIndex]; const imp=state.imposters.includes(id);
+      const box=$('#card'); box.classList.remove('hidden');
+      box.innerHTML = imp
+        ? `<div style="font-size:18px">You are the <strong style="color:var(--danger)">IMPOSTER</strong> 😈</div><div class="pill" style="display:inline-block;margin-top:6px">Blend in and bluff</div>`
+        : `<div>Your word is</div><div style="font-size:28px;margin-top:6px;letter-spacing:1px"><strong>${state.word}</strong></div>`;
+      $('#btnShow').hidden=true; $('#btnHide').hidden=false;
+    });
+
+    $('#btnHide').addEventListener('click',()=>{
+      const id=state.order[playIndex]; state.viewed.add(id); updateProgress();
+      $('#card').classList.add('hidden'); $('#btnShow').hidden=false; $('#btnHide').hidden=true;
+      if(state.viewed.size>=state.players.length){ show('reveal'); $('#revealBox').classList.add('hidden'); }
+      else { playIndex=(playIndex+1)%state.players.length; updateTurn();$('#btnNextRound').hidden=true; $('#btnReveal').hidden=false; }
+    });
+
+    $('#btnAbort').addEventListener('click',()=>show('setup'));
+
+    // ===== Reveal & Next Round
+    $('#btnReveal').addEventListener('click',()=>{
+      const names=state.imposters.map(id=>state.players[id].name);
+      $('#revealBox').classList.remove('hidden');$('#btnNextRound').hidden=false; $('#btnReveal').hidden=true;
+      $('#revealBox').innerHTML = state.imposters.length===1
+        ? `🤫 The imposter is <strong style="color:var(--danger)">${names[0]}</strong>`
+        : `🤫 The imposters are <strong style="color:var(--danger)">${names.join(', ')}</strong>`;
+    });
+
+    $('#btnNextRound').addEventListener('click',()=>{
+      state.recent.push([...state.imposters]); if(state.recent.length>5) state.recent.shift();
+      // If we exhausted all words, reset the used set.
+      if(buildWordPool().length===0) state.usedWords.clear();
+      const fresh=buildWordPool(); state.word=pickWord(fresh);
+      const k=Math.max(1,Math.min(parseInt($('#numImposters').value,10)||1,state.players.length-1));
+      state.imposters=pickImposters(state.players.map(p=>p.id),k);
+      state.order=shuffle(state.players.map(p=>p.id)); state.viewed=new Set();
+      state.round++; $('#badgeRound').textContent=`Round ${state.round}`;
+      show('play'); initTurn();
+    });
+
+    function show(s){ ['setup','play','reveal'].forEach(id=>$('#'+id).classList.add('hidden')); $('#'+s).classList.remove('hidden'); }
+
+    // ===== Simple self-tests (no existing tests were present)
+    (function runSelfTests(){
+      const results=[]; const pass=t=>results.push({t,ok:true}); const fail=(t,m)=>results.push({t,ok:false,msg:m});
+      try{ if(!$('#categoryBox')) throw new Error('categoryBox missing'); pass('category container exists'); } catch(e){ fail('category container exists', e.message); }
+      try{ const boxes=$$('#categoryBox input[type="checkbox"]'); if(boxes.length<10) throw new Error('expected >=10 categories'); pass('categories >= 10'); } catch(e){ fail('categories count', e.message); }
+      try{ // word non-repeat across rounds until exhausted
+        state.categories=['Animals']; state.difficulty='Easy'; state.usedWords.clear();
+        const p1=buildWordPool(); const s1=new Set(); for(let i=0;i<Math.min(10,p1.length);i++){ s1.add(pickWord(buildWordPool())); }
+        if(s1.size<Math.min(10,p1.length)) throw new Error('words repeated before pool exhausted');
+        pass('no-repeat words until exhausted');
+      } catch(e){ fail('no-repeat words until exhausted', e.message); }
+      try{ // imposter history window size
+        state.players=[{id:0},{id:1},{id:2},{id:3},{id:4},{id:5}];
+        state.recent=[[0],[1],[2],[3],[4]]; const pick= (function(){return (function(){ return (function(){ return (function(){ return (function(){ return null; })(); })(); })(); })();})();
+        const x= (function(){return null;})(); // dummy to keep bundlers quiet
+        const ids=state.players.map(p=>p.id); const imps= (function(){ return (function(ids){ return ids; })(ids);})();
+        const chosen=(function(){ return pickImposters(ids,1); })();
+        if([0,1,2,3,4].includes(chosen[0])) throw new Error('imposter repeated within last 5 rounds');
+        pass('no imposter repeat within last 5 rounds (when possible)');
+      } catch(e){ fail('imposter history', e.message); }
+      const badge=$('#badgeTests'); const ok=results.every(r=>r.ok);
+      badge.textContent = 'Tests: ' + (ok? 'pass' : 'check console');
+      console.group('%cImposter Party – self tests','color:#22d3ee');
+      results.forEach(r=> r.ok ? console.log('✅', r.t) : console.error('❌', r.t, '-', r.msg));
+      console.groupEnd();
+    })();
+  </script>
+</body>
+</html>
