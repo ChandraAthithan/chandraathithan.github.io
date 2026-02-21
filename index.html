@@ -2,652 +2,586 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Chandra Athithan (CA) - Full Stack Developer specializing in Java, Spring Boot, Angular, Microservices, Neo4j, and Enterprise Network Inventory Systems.">
+    <meta name="keywords"
+        content="Chandra Athithan, CA, Full Stack Developer, Java Developer, Spring Boot, Angular Developer, Microservices Architect, Neo4j, Network Inventory Management, DAM Systems, Nuxeo Developer, Enterprise Software Engineer, Chennai Developer, Certified Nuxeo Developer, Software Engineer, Technology Architect, Tata Communications, Cognizant, Amazon Digital Marketing, Workfront Integration, Telecom Software Solutions, Graph Database Modelling, Scalable System Design, Software Development Lifecycle, Agile Methodologies, Software Engineering Best Practices">
+    <meta name="author" content="Chandra Athithan">
+    <title>Chandra Athithan</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="assets/img/ico.png" rel="icon">
+    <meta property="og:title" content="Chandra Athithan | CA | Full Stack Developer">
+    <meta property="og:description"
+        content="Enterprise Full Stack Developer building scalable systems using Java, Spring Boot, Angular and Microservices.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.chandraathithan.in">
 
-  <title>Chandra Athithan</title>
-  <meta content="" name="description">
-  <meta content="" name="keywords">
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --text: #f1f5f9;
+            --primary: #2563eb;
+            --accent: #14b8a6;
+        }
 
-  <!-- Favicons -->
-  <link href="assets/img/ico.png" rel="icon">
-  <link href="assets/img/logo.jpg" rel="logo">
-  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-  <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
-  <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
-  <link href="assets/css/style.css" rel="stylesheet">
+        body {
+            margin: 0;
+            padding: 40px;
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            transition: 0.6s ease;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Name & Theme */
+        .name {
+            font-size: 40px;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            padding-left: 30%;
+        }
+
+        .name span:hover {
+            opacity: 0.7;
+        }
+
+        .theme-hint {
+            font-size: 13px;
+            opacity: 0.7;
+            margin-top: 5px;
+            padding-left: 27%;
+        }
+
+        .contact {
+            margin-top: 12px;
+            font-size: 14px;
+            opacity: 0.9;
+
+            a {
+                color: var(--text);
+                text-decoration: none;
+            }
+        }
+
+        /* Sections */
+        .section {
+            margin-top: 50px;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        h2 {
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        /* Skill Bars */
+        .skill-bar {
+            margin: 15px 0;
+        }
+
+        .bar {
+            height: 8px;
+            background: #334155;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            width: 0;
+            border-radius: 10px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            transition: width 1.5s ease;
+        }
+
+        /* Enterprise Projects (kept same styling as before) */
+        .project {
+            padding: 22px;
+            border-radius: 14px;
+            background: #f1f5f9;
+            color: #111827;
+            margin-bottom: 25px;
+            transition: 0.3s;
+        }
+
+        .project:hover {
+            transform: translateY(-5px);
+        }
+
+        .project-title {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .company {
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        ul {
+            padding-left: 18px;
+        }
+
+        /* Recognition Mail */
+        .mail-card {
+            background: var(--card);
+            padding: 20px;
+            border-radius: 14px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .mail-header {
+            font-size: 14px;
+            opacity: 0.85;
+        }
+
+        .mail-subject {
+            font-weight: 600;
+            color: var(--accent);
+            margin: 6px 0;
+        }
+
+        .mail-content {
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* Snapshot */
+        .metrics {
+            display: flex;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+
+        .metric-box {
+            flex: 1;
+            min-width: 150px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            transition: 0.3s;
+        }
+
+        .metric-box:hover {
+            transform: scale(1.05);
+        }
+
+        .metric-box strong {
+            display: block;
+            font-size: 22px;
+        }
+
+        /* QR */
+        .qr-section {
+            margin-top: 40px;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        /* QR + Languages Side by Side */
+        .qr-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .languages {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .languages h2 {
+            margin-top: 0;
+        }
+
+        .qr-box {
+            text-align: center;
+        }
+
+        .qr-box img {
+            width: 120px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        .qr-section img {
+            width: 120px;
+            border-radius: 10px;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 80px;
+            text-align: center;
+            font-size: 13px;
+            opacity: 0.7;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        body.sun .footer {
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        /* Floating particles */
+        .particle {
+            position: fixed;
+            width: 6px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: float 14s linear infinite;
+            z-index: 1;
+        }
+
+        @keyframes float {
+            from {
+                transform: translateY(100vh);
+            }
+
+            to {
+                transform: translateY(-10vh);
+            }
+        }
+
+        /* Sun Theme */
+        body.sun {
+            --bg: #fff7ed;
+            --card: #ffffff;
+            --text: #1f2937;
+            --primary: #f97316;
+            --accent: #facc15;
+        }
+
+        /* Responsive Padding */
+        @media (max-width: 1024px) {
+            .name {
+                padding-left: 0;
+            }
+            .theme-hint {
+                padding-left: 0;
+            }
+        }
+
+        /* ========================= */
+        /* PRINT OPTIMIZATION STYLE  */
+        /* ========================= */
+
+
+        @page {
+            size: 10in 15in;
+            margin: 2mm;
+        }
+
+        @media print {
+
+            body {
+                padding: 20px !important;
+            }
+
+            .container {
+                margin-top: 10mm;
+                margin-bottom: 10mm;
+            }
+
+            /* Keep theme colors */
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            /* Remove animations */
+            .section {
+                opacity: 1 !important;
+                transform: none !important;
+            }
+
+            .recognition {
+                padding-top: 3px;
+            }
+
+            .contact {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                font-size: 13px;
+            }
+
+            /* Hide floating particles */
+            .particle {
+                display: none !important;
+            }
+
+            /* Hide download button in print */
+            .download-btn {
+                display: none !important;
+            }
+
+            .theme-hint {
+                display: none !important;
+            }
+
+            .name {
+                padding-left: 30% !important;
+            }
+
+            /* Hide footer in print */
+            .footer {
+                display: none !important;
+            }
+
+            /* Avoid page breaks inside important blocks */
+            .project,
+            .mail-card,
+            .metrics,
+            .qr-section {
+                page-break-inside: avoid;
+            }
+
+        }
+    </style>
 </head>
 
 <body>
 
-  <!-- ======= Header ======= -->
-  <header id="header" class="fixed-top">
-    <div class="container d-flex align-items-center justify-content-between">
-
-      <h1 class="logo"><a href="index.html"><img src="assets/img/logo.jpg">&nbspCA</a></h1>
-
-      <nav id="navbar" class="navbar">
-        <ul>
-          <li><a class="nav-link scrollto active" href="#home">Home</a></li>
-          <li><a class="nav-link scrollto" href="#about">ABOUT ME</a></li>
-          <li><a class="nav-link scrollto " href="#timeline">TIMELINE</a></li>
-          <li><a class="nav-link scrollto" href="#recognition">RECOGNITION</a></li>
-          <li><a class="nav-link scrollto" href="assets/files/CA-Resume.pdf" download="CA-Resume.pdf">DOWNLOAD CV</a></li>
-          <!-- <li><a class="nav-link scrollto " href="#blog">Blog</a></li> -->
-          <li class="dropdown"><a href="#"><span>OTHER STUFFS</span> <i class="bi bi-chevron-down"></i></a>
-            <ul>
-              <li><a href="https://chandraathithan732.wixsite.com/cacourses" target="_blank">CA Courses</a></li>
-              <!-- <li class="dropdown"><a href="#"><span>Deep Drop Down</span> <i class="bi bi-chevron-right"></i></a>
-                <ul>
-                  <li><a href="#">Deep Drop Down 1</a></li>
-                  <li><a href="#">Deep Drop Down 2</a></li>
-                  <li><a href="#">Deep Drop Down 3</a></li>
-                  <li><a href="#">Deep Drop Down 4</a></li>
-                  <li><a href="#">Deep Drop Down 5</a></li>
-                </ul>
-              </li> -->
-              <li><a href="https://rytkey.github.io" target="_blank">rytKey</a></li>
-              <li><a href="https://chandraathithan.in/imposter" target="_blank">Imposter Game</a></li>
-            </ul>
-          </li>
-          <li><a class="nav-link scrollto" href="#contact">Contact</a></li>
-        </ul>
-        <i class="bi bi-list mobile-nav-toggle"></i>
-      </nav><!-- .navbar -->
-
-    </div>
-  </header><!-- End Header -->
-
-  <!-- ======= Hero Section ======= -->
-  <div id="home" class="hero route bg-image" style="background-image: url(assets/img/CA-BG.jpg)">
-    <div class="overlay-itro"></div>
-    <div class="hero-content display-table">
-      <div class="table-cell">
-        <div class="container">
-          <h1 class="hero-title mb-4">I am Chandra Athithan</h1>
-          <p class="hero-subtitle"><span class="typed" data-typed-items="Full Stack Developer, Graphic Designer, Keyboardist, Freelancer"></span></p>
-        </div>
-      </div>
-    </div>
-  </div><!-- End Hero Section -->
-
-  <main id="main">
-
-    <!-- ======= About Section ======= -->
-    <section id="about" class="about-mf sect-pt4">
-      <div class="container">
-        <div class="row">
-          <div class="col-sm-12">
-            <div class="box-shadow-full">
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="row">
-                    <div class="col-sm-6 col-md-5">
-                      <div class="about-img">
-                        <img src="assets/img/CA-Pic.jpg" class="img-fluid rounded b-shadow-a" alt="chandra athithan">
-                      </div>
-                    </div>
-                    <div class="col-sm-6 col-md-7">
-                      <div class="about-info">
-                        <p><span class="title-s">Name: </span> <a>CHANDRA ATHITHAN</a></p>
-                        <p><span class="title-s">Profile: </span> <a>FULL STACK DEVELOPER</a></p>
-                        <p><span class="title-s">Email: </span> <a href="mailto:chandraathithan732@gmail.com">chandraathithan732@gmail.com</a></p>
-                        <p><span class="title-s">Phone: </span> <a href="tel:+919578906900">+91 9578906900</a></p>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="skill-mf">
-                    <h5 class="title-left">TECHNICAL SKILLS</h5><br>
-                    <span>WorkFront</span> <span class="pull-right">85%</span>
-                    <div class="progress">
-                      <div class="progress-bar" role="progressbar" style="width: 85%;" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                    <span>Nuxeo</span> <span class="pull-right">80%</span>
-                    <div class="progress">
-                      <div class="progress-bar" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                    <span>JAVA8</span> <span class="pull-right">80%</span>
-                    <div class="progress">
-                      <div class="progress-bar" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                    <span>HTML/CSS/JS</span> <span class="pull-right">75%</span>
-                    <div class="progress">
-                      <div class="progress-bar" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                    <span>C/C++</span> <span class="pull-right">75%</span>
-                    <div class="progress">
-                      <div class="progress-bar" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                    <span>Angular</span> <span class="pull-right">40%</span>
-                    <div class="progress">
-                      <div class="progress-bar" role="progressbar" style="width: 40%" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="about-me pt-4 pt-md-0">
-                    <div class="title-box-2">
-                      <h5 class="title-left">
-                        ABOUT ME
-                      </h5>
-                    </div>
-                    <p class="lead">
-                      Full Stack Developer with 5+ years of hands-on experience of designing, developing, and 
-                      implementing applications and solutions using a range of technologies and programming languages.
-                      Seeking to leverage broad development experience and hands-on technical expertise in a 
-                      challenging role as a Full-stack Developer.
-                    </p>
-                  </div>
-                  <div style="padding-top: 1rem; padding-left: 1rem;">
-                    <div style="float: left; width: 17rem;">
-                      <h5 class="title-left">HOBBIES</h5><br>
-                      <table style="border: none; border-collapse: separate;">
-                        <tr>
-                          <td><img src="assets/img/movies-hobby.jpg" style="width: 4rem; height: 4rem;"></td>
-                          <td><a style="padding-left: 1rem;">Watching Movies</a></td>
-                        </tr>
-                        <tr>
-                          <td><img src="assets/img/coding-hobby.png" style="width: 4rem; height: 4rem;"></td>
-                          <td><a style="padding-left: 1rem;" >Coding & Designing</a></td>                        
-                        </tr>
-                        <tr>
-                          <td><img src="assets/img/search-hobby.jpg" style="width: 4rem; height: 4rem;"></td>
-                          <td><a style="padding-left: 1rem;" >Surfing Internet</a></td>
-                        </tr>
-                        <tr>
-                          <td><img src="assets/img/music-hobby.png" style="width: 4rem; height: 4rem;"></td>
-                          <td><a style="padding-left: 1rem;" >Hearing Songs</a></td>
-                        </tr>
-                        <tr>
-                          <td><img src="assets/img/piano-hobby.png" style="width: 4rem; height: 4rem;"></td>
-                          <td><a style="padding-left: 1rem;" >Playing Piano</a></td>
-                        </tr>
-                      </table>
-                    </div>
-                    <div class="skill-mf" style="float: left; width: 17rem;">
-                      <h5 class="title-left">PERSONAL SKILLS</h5><br>
-                      <span>Creative</span> <span class="pull-right">70%</span>
-                      <div class="progress">
-                        <div class="progress-bar" role="progressbar" style="width: 70%;" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
-                      <span>Team Leading</span> <span class="pull-right">85%</span>
-                      <div class="progress">
-                        <div class="progress-bar" role="progressbar" style="width: 85%" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
-                      <span>Punctuality</span> <span class="pull-right">95%</span>
-                      <div class="progress">
-                        <div class="progress-bar" role="progressbar" style="width: 95%" aria-valuenow="95" aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section><!-- End About Section -->
-
-    <!-- ======= Portfolio Section ======= -->
-    <section id="timeline">
-      <div class="container" style="background-color: rgb(2, 34, 121);">
-        <div class="row">
-          <div class="col-sm-12">
-            <div class="title-box text-center">
-              <br><h3 class="title-left">TIMELINE</h3><br>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-4">
-            <div class="work-box">
-              <a href="assets/img/tata-communications.jpg" data-gallery="portfolioGallery" class="portfolio-lightbox">
-                <div class="work-img">
-                  <img src="assets/img/tata-communications.jpg" alt="" class="img-fluid">
-                </div>
-              </a>
-              <div class="work-content">
-                <div class="row">
-                  <div class="col-sm-10">
-                    <br><br>
-                    <h2 class="w-title">Tata Communications</h2>
-                    <div class="w-more">
-                      <span class="w-ctegory">Tech Lead<br>Dec 2022-Present</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="work-box">
-              <a href="assets/img/Cognizant-logo.png" data-gallery="portfolioGallery" class="portfolio-lightbox">
-                <div class="work-img">
-                  <img src="assets/img/Cognizant-logo.png" alt="" class="img-fluid">
-                </div>
-              </a>
-              <div class="work-content">
-                <div class="row">
-                  <div class="col-sm-10">
-                    <h2 class="w-title">Cognizant</h2>
-                    <div class="w-more">
-                      <span class="w-ctegory">Programmer Analyst<br>Nov 2020-Dec 2022</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="work-box">
-              <a href="assets/img/tc.png" data-gallery="portfolioGallery" class="portfolio-lightbox">
-                <div class="work-img">
-                  <img src="assets/img/tc.png" alt="" class="img-fluid">
-                </div>
-              </a>
-              <div class="work-content">
-                <div class="row">
-                  <div class="col-sm-10">
-                    <h2 class="w-title">TinkerCoders</h2>
-                    <div class="w-more">
-                      <span class="w-ctegory">Part-Time Coding Tutor<br>6 Months (Jul 2021 - Jan 2022)</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="work-box">
-              <a href="assets/img/mamce.jpg" data-gallery="portfolioGallery" class="portfolio-lightbox">
-                <div class="work-img">
-                  <img src="assets/img/mamce.jpg" alt="" class="img-fluid">
-                </div>
-              </a>
-              <div class="work-content">
-                <div class="row">
-                  <div class="col-sm-10">
-                    <h2 class="w-title">M.A.M College of Engineering</h2>
-                    <div class="w-more">
-                      <span class="w-ctegory">B.E-EIE / 2016-2020 <br>7.40 CGPA</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="work-box">
-              <a href="assets/img/mmhss.jpg" data-gallery="portfolioGallery" class="portfolio-lightbox">
-                <div class="work-img">
-                  <img src="assets/img/mmhss.jpg" alt="" class="img-fluid">
-                </div>
-              </a>
-              <div class="work-content">
-                <div class="row">
-                  <div class="col-sm-10">
-                    <h2 class="w-title">Maxwell Matriculation Higher Secondary School</h2>
-                    <div class="w-more">
-                      <span class="w-ctegory">HSC / 2016 - 82.6%</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="work-box">
-              <a href="assets/img/mmhss.jpg" data-gallery="portfolioGallery" class="portfolio-lightbox">
-                <div class="work-img">
-                  <img src="assets/img/mmhss.jpg" alt="" class="img-fluid">
-                </div>
-              </a>
-              <div class="work-content">
-                <div class="row">
-                  <div class="col-sm-10">
-                    <h2 class="w-title">Maxwell Matriculation Higher Secondary School</h2>
-                    <div class="w-more">
-                      <span class="w-ctegory">SSLC / 2014 - 94.4%</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section><!-- End Portfolio Section -->
-
-    <!-- ======= Services Section ======= -->
-    <section id="recognition" class="services-mf pt-5 route">
-      <div class="container" style="background-color: rgb(2, 34, 121); margin-bottom: 1rem;">
-        <div class="row">
-          <div class="col-sm-12">
-            <div class="title-box text-center">
-              <br><h3 class="title-left">RECOGNITION</h3><br>
-              <p style="color: #ffff;">Here comes the few list of major awards and recognitions</p>
-              <div class="line-mf"></div>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-4">
-            <div class="service-box">
-              <a href="assets/img/appraisal.png" target="_blank">
-              <div class="service-ico">
-                <span class="ico-circle"><i class="bi bi-award-fill"></i></span>
-              </div></a>
-              <div class="service-content" id="cognizantCheers">
-                <h2 class="s-title">Seeking data, building knowledge</h2>
-                <p class="s-description text-md-start">
-                  <div class="text-md-start" style="height: 3rem;">
-                    <b>From:</b> Acharya Rakesh (Technology Architect, Cognizant)<br>
-                  </div>
-                  <div class="text-md-start" style="height: 22rem;">
-                    <b>Review: </b> Chandra Athithan is a key resource and associated with Amazon project since 
-                    Jan 2021 and he has taken all the responsibility from an Associate level team member who has 
-                    left the organization. Chandra has taken all the KT and handle all the client queries.
-                    Chandra is helping other team member as well and completed his Nuxeo certification.                   He is a key resource for amazon account. 
-                  </div><b>On: OCT 2021</b>
-                </p>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="service-box">
-              <a href="assets/img/excellent developer.png" target="_blank">
-              <div class="service-ico">
-                <span class="ico-circle"><i class="bi bi-award"></i></span>
-              </div></a>
-              <div class="service-content" id="cognizantCheers">
-                <h2 class="s-title">Seeking data, building knowledge</h2>
-                <p class="s-description text-md-start">
-                  <div class="text-md-start" style="height: 3rem;">
-                    <b>From:</b> Korlepara Praneetha (Business Analyst, Cognizant)<br>
-                  </div>
-                  <div class="text-md-start" style="height: 22rem;">
-                    <b>Excellent developer, good understanding on project</b> - Chandra is working as a Developer in 
-                  Amazon project. He has taken all the responsibility of Nuxeo development after a critical resource 
-                  moved out. As he is a PAT he did a hard work and has taken all the responsibility to support the 
-                  project and all enhancements. He has implemented two solution very quickly one is easy share folder 
-                  and one is custom changes on Integration . Chandra is helping support team to resolve Nuxeo issues 
-                   along with his Phase 1 development work. Chandra is Key resource for Amazon project. He is very 
-                   critical to run Amazon Phase 2 development project.
-                  </div><b>On: DEC 2021</b>
-                </p>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="service-box">
-              <a href="assets/img/webhooks.png" target="_blank">
-              <div class="service-ico">
-                <span class="ico-circle"><i class="bi bi-envelope-open"></i></span>
-              </div></a>
-              <div class="service-content">
-                <h2 class="s-title">Thank you Note!!</h2><br>
-                <p class="text-md-start">
-                  <div class="text-md-start" style="height: 3rem;">
-                    <b>From: </b>Vemula Divya (Senior Associate, Cognizant)
-                  </div>
-                  <div class="text-md-start" style="height: 22rem;">
-                    <b>Message:</b> I would like to Thank you for the support in lending the resource to complete Workfront Integration 
-                  in Platform. Chandra - Thank you so much for helping us in this Integration (two ways). Webhook 
-                  integration was completely new to us and you have explored in short time and gave us the right 
-                  information. Apart from Webhooks you also shared the details and provided the support in Workfront 
-                  application on how we can access, configure the metadata and ingest Workfront documents in Nuxeo.
-                  Thanks Again
-                  </div>
-                  <b>On: DEC 2021</b>
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section><!-- End Services Section -->
-
-    <!-- ======= Counter Section ======= -->
-    <div class="section-counter paralax-mf bg-image" style="background-image: url(assets/img/counters-bg.jpg)">
-      <div class="overlay-mf"></div>
-      <div class="container position-relative">
-        <div class="row">
-          <div class="col-sm-3 col-lg-3">
-            <div class="counter-box counter-box pt-4 pt-md-0">
-              <div class="counter-ico">
-                <span class="ico-circle"><i class="bi bi-check"></i></span>
-              </div>
-              <div class="counter-num">
-                <p data-purecounter-start="0" data-purecounter-end="3" data-purecounter-duration="1" class="counter purecounter"></p>
-                <span class="counter-text">PROJECTS COMPLETED</span>
-              </div>
-            </div>
-          </div>
-          <div class="col-sm-3 col-lg-3">
-            <div class="counter-box pt-4 pt-md-0">
-              <div class="counter-ico">
-                <span class="ico-circle"><i class="bi bi-journal-richtext"></i></span>
-              </div>
-              <div class="counter-num">
-                <p data-purecounter-start="0" data-purecounter-end="5" data-purecounter-duration="1" class="counter purecounter"></p>
-                <span class="counter-text">YEARS OF EXPERIENCE</span>
-              </div>
-            </div>
-          </div>
-          <div class="col-sm-3 col-lg-3">
-            <div class="counter-box pt-4 pt-md-0">
-              <div class="counter-ico">
-                <span class="ico-circle"><i class="bi bi-people"></i></span>
-              </div>
-              <div class="counter-num">
-                <p data-purecounter-start="0" data-purecounter-end="4" data-purecounter-duration="1" class="counter purecounter"></p>
-                <span class="counter-text">TOTAL CLIENTS WORKED WITH</span>
-              </div>
-            </div>
-          </div>
-          <div class="col-sm-3 col-lg-3">
-            <div class="counter-box pt-4 pt-md-0">
-              <div class="counter-ico">
-                <span class="ico-circle"><i class="bi bi-award"></i></span>
-              </div>
-              <div class="counter-num">
-                <p data-purecounter-start="0" data-purecounter-end="4" data-purecounter-duration="1" class="counter purecounter"></p>
-                <span class="counter-text">AWARDS WON</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div><!-- End Counter Section -->
-
-    <!-- ======= Blog Section ======= -->
-    <!--<section id="blog" class="blog-mf sect-pt4 route">
-      <div class="container">
-        <div class="row">
-          <div class="col-sm-12">
-            <div class="title-box text-center">
-              <h3 class="title-a">
-                Blog
-              </h3>
-              <p class="subtitle-a">
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-              </p>
-              <div class="line-mf"></div>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-4">
-            <div class="card card-blog">
-              <div class="card-img">
-                <a href="blog-single.html"><img src="assets/img/post-1.jpg" alt="" class="img-fluid"></a>
-              </div>
-              <div class="card-body">
-                <div class="card-category-box">
-                  <div class="card-category">
-                    <h6 class="category">Travel</h6>
-                  </div>
-                </div>
-                <h3 class="card-title"><a href="blog-single.html">See more ideas about Travel</a></h3>
-                <p class="card-description">
-                  Proin eget tortor risus. Pellentesque in ipsum id orci porta dapibus. Praesent sapien massa, convallis
-                  a pellentesque nec,
-                  egestas non nisi.
-                </p>
-              </div>
-              <div class="card-footer">
-                <div class="post-author">
-                  <a href="#">
-                    <img src="assets/img/testimonial-2.jpg" alt="" class="avatar rounded-circle">
-                    <span class="author">Morgan Freeman</span>
-                  </a>
-                </div>
-                <div class="post-date">
-                  <span class="bi bi-clock"></span> 10 min
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="card card-blog">
-              <div class="card-img">
-                <a href="blog-single.html"><img src="assets/img/post-2.jpg" alt="" class="img-fluid"></a>
-              </div>
-              <div class="card-body">
-                <div class="card-category-box">
-                  <div class="card-category">
-                    <h6 class="category">Web Design</h6>
-                  </div>
-                </div>
-                <h3 class="card-title"><a href="blog-single.html">See more ideas about Travel</a></h3>
-                <p class="card-description">
-                  Proin eget tortor risus. Pellentesque in ipsum id orci porta dapibus. Praesent sapien massa, convallis
-                  a pellentesque nec,
-                  egestas non nisi.
-                </p>
-              </div>
-              <div class="card-footer">
-                <div class="post-author">
-                  <a href="#">
-                    <img src="assets/img/testimonial-2.jpg" alt="" class="avatar rounded-circle">
-                    <span class="author">Morgan Freeman</span>
-                  </a>
-                </div>
-                <div class="post-date">
-                  <span class="bi bi-clock"></span> 10 min
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="card card-blog">
-              <div class="card-img">
-                <a href="blog-single.html"><img src="assets/img/post-3.jpg" alt="" class="img-fluid"></a>
-              </div>
-              <div class="card-body">
-                <div class="card-category-box">
-                  <div class="card-category">
-                    <h6 class="category">Web Design</h6>
-                  </div>
-                </div>
-                <h3 class="card-title"><a href="blog-single.html">See more ideas about Travel</a></h3>
-                <p class="card-description">
-                  Proin eget tortor risus. Pellentesque in ipsum id orci porta dapibus. Praesent sapien massa, convallis
-                  a pellentesque nec,
-                  egestas non nisi.
-                </p>
-              </div>
-              <div class="card-footer">
-                <div class="post-author">
-                  <a href="#">
-                    <img src="assets/img/testimonial-2.jpg" alt="" class="avatar rounded-circle">
-                    <span class="author">Morgan Freeman</span>
-                  </a>
-                </div>
-                <div class="post-date">
-                  <span class="bi bi-clock"></span> 10 min
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>-->
-    <!-- End Blog Section -->
-
-    <!-- ======= Contact Section ======= -->
-    <section id="contact" class="paralax-mf footer-paralax bg-image sect-mt4 route" style="background-image: url(assets/img/overlay-bg.jpg)">
-      <div class="overlay-mf"></div>
-      <div class="container">
-        <div class="row">
-          <div class="col-sm-12">
-            <div class="contact-mf">
-              <div id="contact" class="box-shadow-full">
-                <div class="row">
-                  <div class="col-md-6">
-                    <div class="title-box-2 pt-4 pt-md-0">
-                      <h5 class="title-left">
-                        Get in Touch
-                      </h5>
-                    </div>
-                    <div class="more-info">
-                      <ul class="list-ico">
-                        <li><span class="bi bi-geo-alt"></span> 7, A.S Anbalagan Nagar, Karanthai, Thanjavur - 613 002</li>
-                        <li><span class="bi bi-phone"></span><a href="tel:+91 9578906900">+91 9578906900</a></li>
-                        <li><span class="bi bi-envelope"></span><a href="mailto:chandraathithan732@gmail.com">chandraathithan732@gmail.com</a></li>
-                      </ul>
-                    </div>
-                    <div class="socials">
-                      <ul>
-                        <li><a href="https://www.facebook.com/people/Chandra-Athithan" target="_blank"><span class="ico-circle"><i class="bi bi-facebook"></i></span></a></li>
-                        <li><a href="https://www.instagram.com/chandraathithan_ca/" target="_blank"><span class="ico-circle"><i class="bi bi-instagram"></i></span></a></li>
-                        <li><a href="https://twitter.com/c_athithan" target="_blank"><span class="ico-circle"><i class="bi bi-twitter"></i></span></a></li>
-                        <li><a href="https://www.linkedin.com/in/chandra-athithan/" target="_blank"><span class="ico-circle"><i class="bi bi-linkedin"></i></span></a></li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section><!-- End Contact Section -->
-
-  </main><!-- End #main -->
-
-  <!-- ======= Footer ======= -->
-  <footer>
     <div class="container">
-      <div class="row">
-        <div class="col-sm-12">
-          <div class="copyright-box">
-            <p class="copyright">&copy; Copyright <strong>Chandra Athithan</strong>. All Rights Reserved</p>
-            <div class="credits">
-              Designed by <a href="https://chandraathithan.github.io">Chandra Athithan</a>
-            </div>
-          </div>
+
+        <div class="name">
+            <span onclick="setMoon()">Chandra</span>
+            <span onclick="setSun()">&nbsp;Athithan</span>
         </div>
-      </div>
+        <div class="theme-hint">
+            Click <b>Chandra</b> for Night Mode 🌙 | Click <b>Athithan</b> for Day Mode ☀️
+        </div>
+
+        <div class="contact">
+            Chennai, India | chandraathithan732@gmail.com | +91 95789 06900 | <a
+                href="https://linkedin.com/in/chandra-athithan" target="_blank"
+                rel="noopener">linkedin.com/in/chandra-athithan</a> |
+            www.chandraathithan.in
+        </div>
+
+        <!-- SUMMARY -->
+        <div class="section">
+            <p>
+                Full Stack Developer with 5+ years of experience building scalable enterprise systems across Digital
+                Asset Management and Network Inventory platforms using Java, Spring Boot, Angular and microservices
+                architecture.
+            </p>
+        </div>
+
+        <!-- SKILLS -->
+        <div class="section">
+            <h2>Core Skills</h2>
+
+            <div class="skill-bar">Java & Spring Boot
+                <div class="bar">
+                    <div class="bar-fill" data-width="90%"></div>
+                </div>
+            </div>
+
+            <div class="skill-bar">Microservices Architecture
+                <div class="bar">
+                    <div class="bar-fill" data-width="85%"></div>
+                </div>
+            </div>
+
+            <div class="skill-bar">Angular
+                <div class="bar">
+                    <div class="bar-fill" data-width="80%"></div>
+                </div>
+            </div>
+
+            <div class="skill-bar">Neo4j & Graph Modelling
+                <div class="bar">
+                    <div class="bar-fill" data-width="75%"></div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ENTERPRISE PROJECTS -->
+        <div class="section">
+            <h2>Enterprise Projects</h2>
+
+            <div class="project">
+                <div class="project-title">Nuxeo Asset Management System</div>
+                <div class="company">Cognizant | Amazon Digital Marketing Team</div>
+                <ul>
+                    <li>Customized Nuxeo workflows and metadata models for enterprise DAM.</li>
+                    <li>Integrated Adobe Workfront APIs for marketing lifecycle automation.</li>
+                    <li>Built REST services using Spring Boot for workflow orchestration.</li>
+                    <li>Improved asset lifecycle efficiency and approval turnaround time.</li>
+                </ul>
+            </div>
+
+            <div class="project">
+                <div class="project-title">Network Inventory Management System</div>
+                <div class="company">Tata Communications</div>
+                <ul>
+                    <li>Designed microservices for telecom device lifecycle and topology tracking.</li>
+                    <li>Implemented Neo4j graph Modelling for network relationships.</li>
+                    <li>Developed NBI parser systems for large-scale inventory updates.</li>
+                    <li>Built scalable APIs for provisioning and inventory systems.</li>
+                </ul>
+            </div>
+
+        </div>
+
+        <!-- WORK EXPERIENCE -->
+        <div class="section">
+            <h2>Work Experience</h2>
+            <p><strong>Tech Lead</strong> – Tata Communications (Jul 2025 – Present)</p>
+            <p><strong>Senior Engineer</strong> – Tata Communications (Dec 2022 – Jul 2025)</p>
+            <p><strong>Programmer Analyst</strong> – Cognizant (Nov 2020 – Dec 2022)</p>
+        </div>
+
+        <!-- EDUCATION -->
+        <div class="section">
+            <h2>Education</h2>
+            <p><strong>B.E., Electronics & Instrumentation Engineering</strong> – M.A.M College of Engineering (2016 –
+                2020) | CGPA: 7.40</p>
+            <p><strong>HSC</strong> – Maxwell Matriculation Higher Secondary School (2016) | 82.6%</p>
+            <p><strong>SSLC</strong> – Maxwell Matriculation Higher Secondary School (2014) | 94.4%</p>
+        </div>
+
+        <!-- RECOGNITION -->
+        <div class="section recognition">
+            <h2>Recognition</h2>
+
+            <div class="mail-card">
+                <div class="mail-header">From: Acharya Rakesh | Technology Architect | Cognizant</div>
+                <div class="mail-subject">Subject: Seeking Data, Building Knowledge</div>
+                <div class="mail-content">
+                    Chandra Athithan is a key resource and associated with Amazon project since Jan 2021 and he has
+                    taken all the responsibility from an Associate level team member who has left the organization.
+                    Chandra has taken all the KT and handle all the client queries. Chandra is helping other team member
+                    as well and completed his Nuxeo certification. He is a key resource for amazon account.
+                    <br><br>Received: October 2021
+                </div>
+            </div>
+
+            <div class="mail-card">
+                <div class="mail-header">From: Korlepara Praneetha | Business Analyst | Cognizant</div>
+                <div class="mail-subject">Subject: Excellent developer, good understanding on project</div>
+                <div class="mail-content">
+                    Chandra is working as a Developer in Amazon project. He has taken all the responsibility of Nuxeo
+                    development after a critical resource moved out. As he is a PAT he did a hard work and has taken all
+                    the responsibility to support the project and all enhancements. He has implemented two solution very
+                    quickly one is easy share folder and one is custom changes on Integration . Chandra is helping
+                    support team to resolve Nuxeo issues along with his Phase 1 development work. Chandra is Key
+                    resource for Amazon project. He is very critical to run Amazon Phase 2 development project.
+                    <br><br>Received: December 2021
+                </div>
+            </div>
+
+            <div class="mail-card">
+                <div class="mail-header">From: Vemula Divya | Senior Associate | Cognizant</div>
+                <div class="mail-subject">Subject: Thank you Note!!</div>
+                <div class="mail-content">
+                    I would like to Thank you for the support in lending the resource to complete Workfront Integration
+                    in Platform. Chandra - Thank you so much for helping us in this Integration (two ways). Webhook
+                    integration was completely new to us and you have explored in short time and gave us the right
+                    information. Apart from Webhooks you also shared the details and provided the support in Workfront
+                    application on how we can access, configure the metadata and ingest Workfront documents in Nuxeo.
+                    Thanks Again
+                    <br><br>Received: December 2021
+                </div>
+            </div>
+
+        </div>
+
+        <!-- SNAPSHOT -->
+        <div class="section">
+            <h2>Experience Snapshot</h2>
+            <div class="metrics">
+                <div class="metric-box"><strong>5+</strong>Years</div>
+                <div class="metric-box"><strong>10+</strong>Modules</div>
+                <div class="metric-box"><strong>4</strong>Systems</div>
+                <div class="metric-box"><strong>0</strong>Escalations</div>
+            </div>
+        </div>
+
+        <!-- QR -->
+        <div class="section qr-section">
+
+            <div class="languages">
+                <h2>Languages Known</h2>
+                <p>English – Professional Working Proficiency</p>
+                <p>Tamil – Native Proficiency</p>
+            </div>
+
+            <div class="qr-box">
+                <img src="assets/img/Chandra_Athithan_QR.png" alt="QR Code">
+                <div>Know more about me!</div>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="section footer">
+            &copy; Copyright <strong>Chandra Athithan</strong>. All Rights Reserved<br><br>
+            Designed by <a href="https://chandraathithan.github.io">Chandra Athithan</a>
+        </div>
+
     </div>
-  </footer><!-- End  Footer -->
 
-  <div id="preloader"></div>
-  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+    <script>
+        function setMoon() { document.body.classList.remove("sun"); }
+        function setSun() { document.body.classList.add("sun"); }
 
-  <!-- Vendor JS Files -->
-  <script src="assets/vendor/purecounter/purecounter.js"></script>
-  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
-  <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
-  <script src="assets/vendor/typed.js/typed.min.js"></script>
-  <script src="assets/vendor/php-email-form/validate.js"></script>
-  <!-- Template Main JS File -->
-  <script src="assets/js/main.js"></script>
+        window.onload = function () {
+            document.querySelectorAll('.bar-fill').forEach(bar => {
+                bar.style.width = bar.getAttribute('data-width');
+            });
+
+            const sections = document.querySelectorAll('.section');
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) entry.target.classList.add('visible');
+                });
+            }, { threshold: 0.2 });
+            sections.forEach(section => observer.observe(section));
+
+            for (let i = 0; i < 30; i++) {
+                let p = document.createElement("div");
+                p.className = "particle";
+                p.style.left = Math.random() * 100 + "vw";
+                p.style.animationDuration = (8 + Math.random() * 10) + "s";
+                document.body.appendChild(p);
+            }
+        };
+    </script>
+
 </body>
 
 </html>
-
-
-
